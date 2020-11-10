@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:weather_app/repository/WeatherRepository.dart';
+import 'package:weather_app/service/address_search_service.dart';
+import 'package:weather_app/service/place_service.dart';
 import 'WeatherBloc.dart';
 import 'model/Forecast.dart';
 import 'model/WeatherModel.dart';
+import 'package:uuid/uuid.dart';
 
 void main() => runApp(MyApp());
 
@@ -37,11 +40,21 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class SearchPage extends StatelessWidget {
+class SearchPage extends State<MyApp> {
+
+  var cityController = TextEditingController();
+
+  @override
+  void dispose() {
+    cityController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final weatherBloc = BlocProvider.of<WeatherBloc>(context);
-    var cityController = TextEditingController();
+
+
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -76,29 +89,52 @@ class SearchPage extends StatelessWidget {
                     SizedBox(
                       height: 24,
                     ),
-                    TextFormField(
+                    TextField(
                       controller: cityController,
-                      decoration: InputDecoration(
-                        prefixIcon: Icon(
-                          Icons.search,
-                          color: Colors.white70,
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(10)),
-                            borderSide: BorderSide(
-                                color: Colors.white70,
-                                style: BorderStyle.solid)),
-                        focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(10)),
-                            borderSide: BorderSide(
-                                color: Colors.blue, style: BorderStyle.solid)),
-                        hintText: "City Name",
-                        hintStyle: TextStyle(color: Colors.white70),
-                      ),
-                      style: TextStyle(color: Colors.white70),
-                    ),
-                    SizedBox(
-                      height: 20,
+                      readOnly: true,
+                      onTap: () async {
+                        // generate a new token here
+                        final sessionToken = Uuid().v4();
+                        final Suggestion result = await showSearch(
+                          context: context,
+                          delegate: AddressSearch(sessionToken),
+                        );
+                        // This will change the text displayed in the TextField
+                        if (result != null) {
+                          final placeDetails = await PlaceApiProvider(sessionToken)
+                              .getPlaceDetailFromId(result.placeId);
+                          setState(() {
+                           // cityController.text = result.description;
+                            //    _streetNumber = placeDetails.streetNumber;
+                            //    _street = placeDetails.street;
+                            cityController.text = placeDetails.city;
+                            //      _zipCode = placeDetails.zipCode;
+                          });
+                        }
+                      },
+                    // TextFormField(
+                    //   controller: cityController,
+                    //   decoration: InputDecoration(
+                    //     prefixIcon: Icon(
+                    //       Icons.search,
+                    //       color: Colors.white70,
+                    //     ),
+                    //     enabledBorder: OutlineInputBorder(
+                    //         borderRadius: BorderRadius.all(Radius.circular(10)),
+                    //         borderSide: BorderSide(
+                    //             color: Colors.white70,
+                    //             style: BorderStyle.solid)),
+                    //     focusedBorder: OutlineInputBorder(
+                    //         borderRadius: BorderRadius.all(Radius.circular(10)),
+                    //         borderSide: BorderSide(
+                    //             color: Colors.blue, style: BorderStyle.solid)),
+                    //     hintText: "City Name",
+                    //     hintStyle: TextStyle(color: Colors.white70),
+                    //   ),
+                    //   style: TextStyle(color: Colors.white70),
+                    // ),
+                    // SizedBox(
+                     // height: 20,
                     ),
                     Container(
                       width: double.infinity,
