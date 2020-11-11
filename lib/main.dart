@@ -135,7 +135,7 @@ class _SearchPage extends  State<SearchPage> {
 
                           ),
                         ),
-                        hintText: "Enter your shipping address",
+                        hintText: "Enter address",
                         hintStyle: TextStyle(color: Colors.white),
                         border: InputBorder.none,
                         contentPadding: EdgeInsets.only(left: 8.0, top: 16.0),
