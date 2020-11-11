@@ -1,3 +1,4 @@
+import 'package:uuid/uuid.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:weather_app/repository/WeatherRepository.dart';
@@ -6,7 +7,6 @@ import 'package:weather_app/service/place_service.dart';
 import 'WeatherBloc.dart';
 import 'model/Forecast.dart';
 import 'model/WeatherModel.dart';
-import 'package:uuid/uuid.dart';
 
 void main() => runApp(MyApp());
 
@@ -34,19 +34,32 @@ class MyApp extends StatelessWidget {
           backgroundColor: Colors.grey[900],
           body: BlocProvider(
             builder: (context) => WeatherBloc(WeatherRepository()),
-            child: SearchPage(),
+            child: SearchPage(title: 'Places Autocomplete Demo'),
           ),
         ));
   }
 }
 
-class SearchPage extends State<MyApp> {
+class SearchPage extends StatefulWidget {
+  SearchPage({Key key, this.title}) : super(key: key);
+
+  final String title;
+
+  @override
+  _SearchPage createState() => _SearchPage();
+}
+
+class _SearchPage extends  State<SearchPage> {
 
   var cityController = TextEditingController();
 
+  final _controller = TextEditingController();
+
+  String _city = 'Lviv';
+
   @override
   void dispose() {
-    cityController.dispose();
+    _controller.dispose();
     super.dispose();
   }
 
@@ -90,7 +103,7 @@ class SearchPage extends State<MyApp> {
                       height: 24,
                     ),
                     TextField(
-                      controller: cityController,
+                      controller: _controller,
                       readOnly: true,
                       onTap: () async {
                         // generate a new token here
@@ -104,38 +117,31 @@ class SearchPage extends State<MyApp> {
                           final placeDetails = await PlaceApiProvider(sessionToken)
                               .getPlaceDetailFromId(result.placeId);
                           setState(() {
-                           // cityController.text = result.description;
+                            _controller.text = result.description;
                             //    _streetNumber = placeDetails.streetNumber;
                             //    _street = placeDetails.street;
-                            cityController.text = placeDetails.city;
+                            _city = placeDetails.city;
                             //      _zipCode = placeDetails.zipCode;
                           });
                         }
                       },
-                    // TextFormField(
-                    //   controller: cityController,
-                    //   decoration: InputDecoration(
-                    //     prefixIcon: Icon(
-                    //       Icons.search,
-                    //       color: Colors.white70,
-                    //     ),
-                    //     enabledBorder: OutlineInputBorder(
-                    //         borderRadius: BorderRadius.all(Radius.circular(10)),
-                    //         borderSide: BorderSide(
-                    //             color: Colors.white70,
-                    //             style: BorderStyle.solid)),
-                    //     focusedBorder: OutlineInputBorder(
-                    //         borderRadius: BorderRadius.all(Radius.circular(10)),
-                    //         borderSide: BorderSide(
-                    //             color: Colors.blue, style: BorderStyle.solid)),
-                    //     hintText: "City Name",
-                    //     hintStyle: TextStyle(color: Colors.white70),
-                    //   ),
-                    //   style: TextStyle(color: Colors.white70),
-                    // ),
-                    // SizedBox(
-                     // height: 20,
+                      decoration: InputDecoration(
+                        icon: Container(
+                          width: 10,
+                          height: 10,
+                          child: Icon(
+                            Icons.home,
+                            color: Colors.white,
+
+                          ),
+                        ),
+                        hintText: "Enter your shipping address",
+                        hintStyle: TextStyle(color: Colors.white),
+                        border: InputBorder.none,
+                        contentPadding: EdgeInsets.only(left: 8.0, top: 16.0),
+                      ),
                     ),
+                    SizedBox(height: 20.0),
                     Container(
                       width: double.infinity,
                       height: 50,
@@ -144,7 +150,7 @@ class SearchPage extends State<MyApp> {
                             borderRadius:
                             BorderRadius.all(Radius.circular(10))),
                         onPressed: () {
-                          weatherBloc.add(FetchWeather(cityController.text));
+                          weatherBloc.add(FetchWeather(_city));
                         },
                         color: Colors.lightBlue,
                         child: Text(
@@ -159,7 +165,7 @@ class SearchPage extends State<MyApp> {
             else if (state is WeatherIsLoading)
               return Center(child: CircularProgressIndicator());
             else if (state is WeatherIsLoaded)
-              return ShowForecast(state.getForecast, cityController.text);
+              return ShowForecast(state.getForecast, _city);
             else
               return Text(
                 "Error",

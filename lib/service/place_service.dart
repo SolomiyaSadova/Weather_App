@@ -41,13 +41,13 @@ class PlaceApiProvider {
 
   final sessionToken;
 
-  static final String androidKey = '43ea6baaad7663dc17637e22ee6f78f2';
-  static final String iosKey = '43ea6baaad7663dc17637e22ee6f78f2';
+  static final String androidKey = 'AIzaSyDuZuQD48SOGsmCXJhlss10178v170l4uc';
+  static final String iosKey = 'AIzaSyDuZuQD48SOGsmCXJhlss10178v170l4uc';
   final apiKey = Platform.isAndroid ? androidKey : iosKey;
 
   Future<List<Suggestion>> fetchSuggestions(String input, String lang) async {
     final request =
-        'https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$input&types=(cities)&language=$lang&components=country:ua&key=$apiKey&sessiontoken=$sessionToken';
+        'https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$input&types=(cities)&language=$lang&key=$apiKey&sessiontoken=$sessionToken';
     final response = await client.get(request);
 
     if (response.statusCode == 200) {
