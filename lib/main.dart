@@ -55,7 +55,7 @@ class _SearchPage extends  State<SearchPage> {
 
   final _controller = TextEditingController();
 
-  String _city = 'Lviv';
+  String _city = '';
 
   @override
   void dispose() {
@@ -73,14 +73,6 @@ class _SearchPage extends  State<SearchPage> {
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        //
-        // Center(
-        //     child: Container(
-        //       child: FlareActor("assets/WorldSpin.flr", fit: BoxFit.contain, animation: "roll",),
-        //       height: 300,
-        //       width: 300,
-        //     )
-        // ),
 
         BlocBuilder<WeatherBloc, WeatherState>(
           builder: (context, state) {
@@ -118,10 +110,7 @@ class _SearchPage extends  State<SearchPage> {
                               .getPlaceDetailFromId(result.placeId);
                           setState(() {
                             _controller.text = result.description;
-                            //    _streetNumber = placeDetails.streetNumber;
-                            //    _street = placeDetails.street;
                             _city = placeDetails.city;
-                            //      _zipCode = placeDetails.zipCode;
                           });
                         }
                       },
