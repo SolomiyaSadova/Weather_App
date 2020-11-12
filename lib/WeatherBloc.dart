@@ -7,6 +7,7 @@ import 'model/Forecast.dart';
 
 class WeatherEvent extends Equatable{
   @override
+  // TODO: implement props
   List<Object> get props => [];
 
 }
@@ -17,6 +18,7 @@ class FetchWeather extends WeatherEvent{
   FetchWeather(this._city);
 
   @override
+  // TODO: implement props
   List<Object> get props => [_city];
 }
 
@@ -26,6 +28,7 @@ class ResetWeather extends WeatherEvent{
 
 class WeatherState extends Equatable{
   @override
+  // TODO: implement props
   List<Object> get props => [];
 
 }
@@ -47,6 +50,7 @@ class WeatherIsLoaded extends WeatherState{
   List<Forecast> get getForecast => _weather;
 
   @override
+  // TODO: implement props
   List<Object> get props => [_weather];
 }
 
@@ -61,10 +65,12 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState>{
   WeatherBloc(this.weatherRepository);
 
   @override
+  // TODO: implement initialState
   WeatherState get initialState => WeatherIsNotSearched();
 
   @override
   Stream<WeatherState> mapEventToState(WeatherEvent event) async*{
+    // TODO: implement mapEventToState
     if(event is FetchWeather){
       yield WeatherIsLoading();
 
