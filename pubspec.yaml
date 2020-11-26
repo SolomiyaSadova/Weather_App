@@ -28,6 +28,9 @@ dependencies:
   http: ^0.12.0+2
   equatable: ^0.6.1
   intl: ^0.15.3
+  animate_icons: ^1.0.0
+  weather_icons: 2.0.2
+  animated_icon_button: ^0.3.0
 #  flutter_google_places: ^0.2.6
 #  google_places_flutter: ^2.0.3
 #  google_maps_flutter: ^0.5.19

@@ -48,7 +48,7 @@ class WeatherRepository {
         day = date;
       }
 
-      if (forecast.length == 4) {
+      if (forecast.length == 3) {
         break;
       }
     }
@@ -58,12 +58,18 @@ class WeatherRepository {
   List<WeatherModel> createWeatherModelList(DateTime dateTime, List<WeatherResponse> weatherResponse) {
 
     List<WeatherModel> weatherModel = [];
+    var isSaved = true;
 
     for (var weather in weatherResponse) {
 
       DateTime date = convertDateFromString(weather.dt_txt);
       if (date.day == dateTime.day) {
-        weatherModel.add(new WeatherModel(date.hour, weather.main['temp']));
+        if (isSaved) {
+          weatherModel.add(new WeatherModel(date.hour, weather.main['temp']));
+          isSaved = false;
+        } else {
+          isSaved = true;
+        }
       }
     }
 
